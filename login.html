@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO CODE GENERATOR — Access Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="login.css">
+</head>
+<body>
+
+<!-- Animated gradient orbs -->
+<div class="bg-orb-1"></div>
+<div class="bg-orb-2"></div>
+<div class="bg-orb-3"></div>
+
+<div class="particles" id="particles"></div>
+
+<div class="login-wrap">
+  <div class="login-card" id="loginCard">
+    <div class="card-glow"></div>
+    <div class="card-shine"></div>
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="brand-logo">
+        <i class="fa-solid fa-cube"></i>
+        <div class="logo-pulse"></div>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">PRO CODE GENERATOR</span>
+        <span class="brand-tagline">Secure Access Portal</span>
+      </div>
+    </div>
+
+    <div class="divider">
+      <span class="divider-line"></span>
+      <span class="divider-label">Sign In</span>
+      <span class="divider-line"></span>
+    </div>
+
+    <!-- Error alert -->
+    <div class="alert alert-error" id="alertError">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      <span id="alertMsg">Invalid credentials. Please try again.</span>
+    </div>
+
+    <form id="loginForm" autocomplete="on" novalidate>
+      <div class="field" id="fieldEmail">
+        <label for="emailInput"><i class="fa-regular fa-envelope"></i> Email Address</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-envelope input-icon"></i>
+          <input id="emailInput" type="email" name="email" placeholder="you@company.com" autocomplete="email" required>
+          <div class="input-focus-border"></div>
+        </div>
+        <span class="field-err"><i class="fa-solid fa-circle-exclamation"></i> Please enter a valid email address.</span>
+      </div>
+
+      <div class="field" id="fieldPassword">
+        <label for="passwordInput"><i class="fa-regular fa-lock-keyhole"></i> Password</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-lock input-icon"></i>
+          <input id="passwordInput" type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+          <button type="button" class="toggle-pwd" id="togglePwd" tabindex="-1">
+            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+          </button>
+          <div class="input-focus-border"></div>
+        </div>
+        <span class="field-err"><i class="fa-solid fa-circle-exclamation"></i> Password cannot be empty.</span>
+      </div>
+
+      <!-- Remember Me & Forgot Password row -->
+      <div class="form-extra">
+        <label class="remember-checkbox">
+          <input type="checkbox" id="rememberMe"> <span>Remember me</span>
+        </label>
+        <a href="#" id="forgotPasswordLink" class="forgot-link">
+          <i class="fa-regular fa-question-circle"></i> Forgot Password?
+        </a>
+      </div>
+
+      <button type="submit" class="btn-login" id="btnLogin">
+        <span class="btn-label"><i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In</span>
+        <span class="btn-spinner"><span class="spinner-ring"></span> Authenticating…</span>
+      </button>
+    </form>
+
+    <p class="footer-note">&copy; 2026 Trio Group. All rights reserved.</p>
+  </div>
+</div>
+
+<!-- Forgot Password Modal -->
+<div id="forgotModal" class="forgot-modal">
+  <div class="forgot-modal-content">
+    <div class="forgot-modal-icon">
+      <i class="fa-solid fa-envelope-open-text"></i>
+      <div class="icon-pulse"></div>
+    </div>
+    <h3>Contact Your Administrator</h3>
+    <p>Your system admin can help you reset your password and regain access.</p>
+    <button id="closeModalBtn" class="forgot-modal-close">
+      <span>Got it</span> <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Success overlay -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-box">
+    <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+    <p class="success-title" id="successTitle">Welcome back!</p>
+    <p class="success-sub" id="successSub">Redirecting…</p>
+    <div class="success-bar"><div class="success-bar-fill" id="successBarFill"></div></div>
+  </div>
+</div>
+
+<script src="auth.js"></script>
+<script>
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby2G8Q8JLi2cfiyXITFHaxkyCR10eZ-UGxU3SrSsGNRtZZv6WpDQrWi7Pez8rgP7CaHnw/exec";
+
+// Particles
+(function createParticles() {
+  const container = document.getElementById("particles");
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement("span");
+    p.className = "particle";
+    const size = 1 + Math.random() * 4;
+    p.style.cssText = `
+      left:${Math.random() * 100}%;
+      top:${Math.random() * 100}%;
+      width:${size}px;
+      height:${size}px;
+      animation-delay:${Math.random() * 15}s;
+      animation-duration:${8 + Math.random() * 12}s;
+      opacity:${0.1 + Math.random() * 0.4};
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// Password toggle
+const pwdInput = document.getElementById("passwordInput");
+const eyeIcon = document.getElementById("eyeIcon");
+document.getElementById("togglePwd")?.addEventListener("click", () => {
+  const isPassword = pwdInput.type === "password";
+  pwdInput.type = isPassword ? "text" : "password";
+  eyeIcon.className = isPassword ? "fa-regular fa-eye-slash" : "fa-regular fa-eye";
+});
+
+// Field validation
+const emailInput = document.getElementById("emailInput");
+function setFieldState(fieldId, state, errorMsg = "") {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  el.classList.remove("valid", "invalid");
+  if (state === "valid") el.classList.add("valid");
+  if (state === "invalid") el.classList.add("invalid");
+  const errSpan = el.querySelector(".field-err");
+  if (errSpan && errorMsg) errSpan.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${errorMsg}`;
+}
+emailInput?.addEventListener("input", function() {
+  const isValid = this.value.trim() !== "" && this.checkValidity();
+  setFieldState("fieldEmail", isValid ? "valid" : this.value ? "invalid" : "");
+});
+document.getElementById("passwordInput")?.addEventListener("input", function() {
+  setFieldState("fieldPassword", this.value.length ? "valid" : "");
+});
+
+function showError(msg) {
+  const alertDiv = document.getElementById("alertError");
+  document.getElementById("alertMsg").textContent = msg;
+  alertDiv.classList.add("visible");
+  setTimeout(() => alertDiv.classList.remove("visible"), 5000);
+}
+
+function setLoading(btnId, state) {
+  const btn = document.getElementById(btnId);
+  if (btn) {
+    btn.disabled = state;
+    btn.classList.toggle("loading", state);
+  }
+}
+
+async function attemptLogin(email, password) {
+  setLoading("btnLogin", true);
+  document.getElementById("alertError").classList.remove("visible");
+  try {
+    const params = new URLSearchParams({ action: "login", email, password });
+    const res = await fetch(`${APPS_SCRIPT_URL}?${params}`);
+    const data = await res.json();
+    if (data.ok && data.user) {
+      const rememberCheck = document.getElementById("rememberMe");
+      if (rememberCheck.checked) {
+        localStorage.setItem("savedEmail", email);
+      } else {
+        localStorage.removeItem("savedEmail");
+      }
+      showSuccessAndRedirect(data.user);
+    } else {
+      showError(data.error || "Invalid email or password.");
+      setLoading("btnLogin", false);
+      document.getElementById("loginCard")?.classList.add("shake");
+      setTimeout(() => document.getElementById("loginCard")?.classList.remove("shake"), 600);
+    }
+  } catch (err) {
+    showError("Unable to reach the server. Check your Apps Script URL.");
+    setLoading("btnLogin", false);
+  }
+}
+
+function showSuccessAndRedirect(user) {
+  const roleLabel = {
+    admin:  "Admin Dashboard",
+    author: "Author Workspace",
+    user:   "User Dashboard"
+  }[user.role.toLowerCase()] || "Dashboard";
+  document.getElementById("successTitle").textContent = `Welcome, ${user.username}!`;
+  document.getElementById("successSub").textContent = `Role: ${user.role}  ·  Entering ${roleLabel}…`;
+  const overlay = document.getElementById("successOverlay");
+  overlay.classList.add("visible");
+  setTimeout(() => { document.getElementById("successBarFill").style.width = "100%"; }, 60);
+  setTimeout(() => {
+    sessionStorage.setItem("pcg_user", JSON.stringify(user));
+    window.location.href = "index.html";
+  }, 1800);
+}
+
+// Login form submit
+document.getElementById("loginForm")?.addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const email = emailInput.value.trim();
+  const password = pwdInput.value;
+  if (!email || !emailInput.checkValidity()) {
+    setFieldState("fieldEmail", "invalid", "Please enter a valid email address.");
+    return;
+  }
+  if (!password) {
+    setFieldState("fieldPassword", "invalid", "Password cannot be empty.");
+    return;
+  }
+  await attemptLogin(email, password);
+});
+
+// Remember Me: restore email on load
+if (localStorage.getItem("savedEmail")) {
+  emailInput.value = localStorage.getItem("savedEmail");
+  document.getElementById("rememberMe").checked = true;
+}
+
+// Forgot Password Modal
+const modal = document.getElementById("forgotModal");
+const forgotLink = document.getElementById("forgotPasswordLink");
+const closeModalBtn = document.getElementById("closeModalBtn");
+forgotLink?.addEventListener("click", (e) => {
+  e.preventDefault();
+  modal.classList.add("show");
+});
+closeModalBtn?.addEventListener("click", () => modal.classList.remove("show"));
+modal?.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("show"); });
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.classList.contains("show")) modal.classList.remove("show");
+});
+
+// Auto-redirect if already logged in
+(function checkSession() {
+  const saved = sessionStorage.getItem("pcg_user");
+  if (saved) {
+    try {
+      const u = JSON.parse(saved);
+      if (u && u.email && u.role) window.location.href = "index.html";
+    } catch (_) {}
+  }
+})();
+</script>
+</body>
+</html>
