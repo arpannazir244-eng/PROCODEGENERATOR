@@ -7,315 +7,270 @@
 <title>PRO CODE GENERATOR</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+<div class="admin-bg-effects"><span></span><span></span><span></span></div>
 
 <div class="app">
 
   <aside class="sidebar">
-    <div class="logo">
-      <i class="fa-solid fa-cube"></i>
+    <div class="logo" aria-label="Trio Group">
+      <img src="https://res.cloudinary.com/dsvyn62lc/image/upload/q_auto/f_auto/v1776405935/trio_group_logo-removebg-preview_ymc7fs.png" alt="Trio Group logo">
     </div>
-    <span class="brand-mark">PCG</span>
+    <span class="brand-mark">TRIO</span>
     <nav>
-      <a class="active" title="Dashboard"><i class="fa-solid fa-house"></i></a>
-      <a class="nav-reports" title="Reports"><i class="fa-solid fa-file-lines"></i></a>
-      <a class="nav-analytics" title="Analytics"><i class="fa-solid fa-chart-simple"></i></a>
+      <a class="active" title="Dashboard" data-page="page-dashboard">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="1em" height="1em" fill="currentColor" aria-hidden="true" style="display:block;">
+          <rect x="1"   y="9"  width="3" height="8"  rx="1.2"/>
+          <rect x="5.5" y="2"  width="3" height="15" rx="1.2"/>
+          <rect x="10"  y="5"  width="3" height="12" rx="1.2"/>
+          <rect x="14.5" y="12" width="3" height="5"  rx="1.2"/>
+        </svg>
+      </a>
+      <a class="nav-reports" title="Reports" data-page="page-reports"><i class="fa-solid fa-file-lines"></i></a>
+      <a class="nav-analytics" title="Form" data-page="page-form">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="1em" height="1em" fill="currentColor" aria-hidden="true" style="display:block;">
+          <rect x="2" y="1" width="14" height="16" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="4.5" y="4.5" width="5" height="1.5" rx="0.75"/>
+          <rect x="4.5" y="7.5" width="9" height="1.5" rx="0.75"/>
+          <rect x="4.5" y="10.5" width="7" height="1.5" rx="0.75"/>
+          <rect x="4.5" y="13.5" width="4" height="1.5" rx="0.75"/>
+          <circle cx="3.5" cy="5.25" r="0.75"/>
+          <circle cx="3.5" cy="8.25" r="0.75"/>
+          <circle cx="3.5" cy="11.25" r="0.75"/>
+          <circle cx="3.5" cy="14.25" r="0.75"/>
+        </svg>
+      </a>
+      <!-- Admin Panel icon — shown only for admin / author roles via JS -->
+      <a class="nav-admin" title="Admin Panel" data-page="page-admin" style="display:none;">
+        <i class="fa-solid fa-user-shield"></i>
+      </a>
       <span class="nav-spacer"></span>
-      <a title="Settings"><i class="fa-solid fa-gear"></i></a>
+      <a title="Settings" data-page="page-settings"><i class="fa-solid fa-gear"></i></a>
     </nav>
+
+    <div class="sidebar-user">
+      <div class="su-avatar" id="sidebarAvatar">?</div>
+      <div class="su-info">
+        <span class="su-name" id="sidebarUsername">Loading…</span>
+        <span class="su-role" id="sidebarRole">—</span>
+      </div>
+      <button class="su-logout" id="btnLogout" title="Sign out">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+      </button>
+    </div>
   </aside>
 
   <main>
 
-    <div class="topbar">
-      <div>
-        <span class="eyebrow">Inventory command center</span>
-        <h1>PRO CODE GENERATOR</h1>
-        <p>Smart Product Code Management</p>
+    <!-- ═══════════════ DASHBOARD PAGE ═══════════════ -->
+    <div id="page-dashboard" class="page page-active">
+      <div class="page-header ph-dashboard">
+        <div class="ph-badge">
+          <span class="ph-badge-dot"></span>
+          Live Overview
+        </div>
+        <h2 class="ph-title">DASHBOARD</h2>
+        <div class="ph-accent-line"></div>
+        <p class="ph-desc">Real-time inventory metrics &amp; category analytics</p>
       </div>
-      <div class="actions">
-        <button class="cancel" type="button" title="Cancel" aria-label="Cancel">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-        <button class="save" type="button" title="Save Product" aria-label="Save Product">
-          <i class="fa-solid fa-floppy-disk"></i>
-        </button>
+
+      <div class="cards">
+        <div class="card purple">
+          <div class="card-head"><i class="fa-solid fa-star"></i><span>Leather</span></div>
+          <h2 id="leather-count"><span class="loader"></span></h2>
+          <p>Total items tracked</p>
+          <div class="progress" id="leather-progress">--</div>
+        </div>
+        <div class="card blue">
+          <div class="card-head"><i class="fa-regular fa-square"></i><span>Non-Leather</span></div>
+          <h2 id="non-leather-count"><span class="loader"></span></h2>
+          <p>Total items tracked</p>
+          <div class="progress" id="non-leather-progress">--</div>
+        </div>
+        <div class="card orange">
+          <div class="card-head"><i class="fa-solid fa-box-open"></i><span>Packing</span></div>
+          <h2 id="packing-count"><span class="loader"></span></h2>
+          <p>Total items tracked</p>
+          <div class="progress" id="packing-progress">--</div>
+        </div>
+      </div>
+
+      <div class="charts-row">
+        <div class="chart-panel">
+          <div class="chart-panel-head">
+            <div><span class="eyebrow">Distribution</span><h3>Category Breakdown</h3><p class="chart-sub">Share of total inventory</p></div>
+            <div class="chart-icon chart-icon-blue"><i class="fa-solid fa-circle-half-stroke"></i></div>
+          </div>
+          <div class="donut-wrap">
+            <canvas id="donutChart"></canvas>
+            <div class="donut-center"><span class="donut-label">TOTAL</span><strong id="donut-total">--</strong></div>
+          </div>
+          <div class="chart-legend" id="donut-legend">
+            <div class="legend-row"><div class="legend-left"><span class="legend-dot" style="background:#8b5cf6;box-shadow:0 0 6px #8b5cf688;"></span><span class="legend-name">Leather</span></div><div class="legend-right"><span class="legend-pct purple-text" id="legend-pct-leather">--%</span><span class="legend-val" id="legend-val-leather">--</span></div></div>
+            <div class="legend-row"><div class="legend-left"><span class="legend-dot" style="background:#38bdf8;box-shadow:0 0 6px #38bdf888;"></span><span class="legend-name">Non-Leather</span></div><div class="legend-right"><span class="legend-pct blue-text" id="legend-pct-nonleather">--%</span><span class="legend-val" id="legend-val-nonleather">--</span></div></div>
+            <div class="legend-row"><div class="legend-left"><span class="legend-dot" style="background:#f59e0b;box-shadow:0 0 6px #f59e0b88;"></span><span class="legend-name">Packing</span></div><div class="legend-right"><span class="legend-pct amber-text" id="legend-pct-packing">--%</span><span class="legend-val" id="legend-val-packing">--</span></div></div>
+          </div>
+        </div>
+        <div class="chart-panel chart-panel-wide">
+          <div class="chart-panel-head">
+            <div><span class="eyebrow">Comparison</span><h3>Category Volume</h3><p class="chart-sub">Absolute item counts per category</p></div>
+            <div class="chart-icon chart-icon-violet"><i class="fa-solid fa-chart-column"></i></div>
+          </div>
+          <div class="bar-wrap"><canvas id="barChart"></canvas></div>
+          <div class="bar-summary">
+            <div class="bar-summary-item" style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);"><strong id="bar-val-leather" class="purple-text">--</strong><span>LEATHER</span></div>
+            <div class="bar-summary-item" style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.25);"><strong id="bar-val-nonleather" class="blue-text">--</strong><span>NON-LEATHER</span></div>
+            <div class="bar-summary-item" style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);"><strong id="bar-val-packing" class="amber-text">--</strong><span>PACKING</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="live-bar">
+        <span class="live-dot" id="live-dot"></span>
+        <span id="live-status">Live · refreshes every 15s</span>
+        <span class="live-time" id="live-time"></span>
       </div>
     </div>
 
-    <div class="cards">
-
-      <div class="card purple">
-        <div class="card-head">
-          <i class="fa-solid fa-star"></i>
-          <span>Leather</span>
-        </div>
-        <h2 id="leather-count"><span class="loader"></span></h2>
-        <p>Total items tracked</p>
-        <div class="progress" id="leather-progress">--</div>
+    <!-- ═══════════════ FORM PAGE ═══════════════ -->
+    <div id="page-form" class="page">
+      <div class="page-header ph-form">
+        <div class="ph-badge"><span class="ph-badge-dot"></span>Create Code</div>
+        <h2 class="ph-title">PRODUCT GENERATOR</h2>
+        <div class="ph-accent-line"></div>
+        <p class="ph-desc">Build and generate smart product codes with ease</p>
       </div>
-
-      <div class="card blue">
-        <div class="card-head">
-          <i class="fa-regular fa-square"></i>
-          <span>Non-Leather</span>
-        </div>
-        <h2 id="non-leather-count"><span class="loader"></span></h2>
-        <p>Total items tracked</p>
-        <div class="progress" id="non-leather-progress">--</div>
+      <div class="content">
+        <section class="form-panel">
+          <div class="panel-head">
+            <div><span class="eyebrow">Create code</span><h2>Product Information</h2></div>
+            <i class="fa-solid fa-barcode"></i>
+          </div>
+          <div class="grid create-code-grid">
+            <label>Group<div class="custom-select" data-id="group" data-placeholder="Select Group"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Group</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Category<div class="custom-select" data-id="category" data-placeholder="Select Category"><button class="cs-trigger" type="button" disabled><span class="cs-value cs-placeholder">Select Category</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Sub-Category<div class="custom-select" data-id="subCategory" data-placeholder="Select Sub-Category"><button class="cs-trigger" type="button" disabled><span class="cs-value cs-placeholder">Select Sub-Category</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Number<div class="custom-select" data-id="number" data-placeholder="Select Number"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Number</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>UOM<div class="custom-select" data-id="uom" data-placeholder="Select UOM"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select UOM</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Description<div class="custom-select" data-id="description" data-placeholder="Select Description"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Description</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Description (Opt.)<div class="custom-select" data-id="descriptionOpt" data-placeholder="Select Description (Opt.)"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Description (Opt.)</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Colour<div class="custom-select" data-id="colour" data-placeholder="Select Colour"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Colour</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Stock Keeping UOM<div class="custom-select" data-id="stockKeepingUom" data-placeholder="Select Stock Keeping UOM"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Stock Keeping UOM</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Alt. UOM<div class="custom-select" data-id="altUom" data-placeholder="Select Alt. UOM"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Alt. UOM</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+            <label>Unit Conversion Rate<div class="custom-select" data-id="conversionRate" data-placeholder="Select Rate"><button class="cs-trigger" type="button"><span class="cs-value cs-placeholder">Select Rate</span><i class="fa-solid fa-chevron-down cs-chevron"></i></button><div class="cs-panel"><div class="cs-search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input class="cs-search" type="text" placeholder="Search..."></div><ul class="cs-list"></ul></div></div></label>
+          </div>
+          <div class="code-box"><span>Generated Product Code</span><strong id="generated-code">Waiting for input</strong></div>
+        </section>
+        <aside class="ai-panel">
+          <div class="aip-orb aip-orb-1"></div><div class="aip-orb aip-orb-2"></div>
+          <div class="aip-header"><div class="aip-avatar"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="aip-avatar-ring"></span></div><div><h3 class="aip-name">AI Assistant</h3><div class="aip-status"><span class="aip-dot"></span><span>Online &amp; Ready</span></div></div></div>
+        </aside>
       </div>
-
-      <div class="card orange">
-        <div class="card-head">
-          <i class="fa-solid fa-box-open"></i>
-          <span>Packing</span>
-        </div>
-        <h2 id="packing-count"><span class="loader"></span></h2>
-        <p>Total items tracked</p>
-        <div class="progress" id="packing-progress">--</div>
-      </div>
-
     </div>
 
-    <div class="content">
+    <!-- ═══════════════ REPORTS PAGE ═══════════════ -->
+    <div id="page-reports" class="page">
+      <div class="page-header ph-reports">
+        <div class="ph-badge"><span class="ph-badge-dot"></span>Data Reports</div>
+        <h2 class="ph-title">REPORTS</h2>
+        <div class="ph-accent-line"></div>
+        <p class="ph-desc">Detailed inventory reports and export summaries</p>
+      </div>
+      <div class="reports-placeholder">
+        <div class="rp-icon"><i class="fa-solid fa-file-lines"></i></div>
+        <h3>Reports Coming Soon</h3>
+        <p>Your detailed inventory reports will appear here.</p>
+      </div>
+    </div>
 
-      <section class="form-panel">
-        <div class="panel-head">
-          <div>
-            <span class="eyebrow">Create code</span>
-            <h2>Product Information</h2>
+    <!-- ═══════════════ ADMIN PANEL PAGE ═══════════════ -->
+    <div id="page-admin" class="page">
+      <div class="page-header ph-admin">
+        <div class="ph-badge"><span class="ph-badge-dot"></span>Administration</div>
+        <h2 class="ph-title">ADMIN PANEL</h2>
+        <div class="ph-accent-line"></div>
+        <p class="ph-desc">Manage user access levels for Dashboard, Reports, and Forms</p>
+      </div>
+
+      <!-- Stats bar -->
+      <div class="admin-stats-bar" id="adminStatsBar" style="display:none;">
+        <div class="admin-stat">
+          <span class="admin-kpi-icon"><i class="fa-solid fa-users"></i></span>
+          <span class="admin-stat-val" id="statTotalUsers">—</span>
+          <span class="admin-stat-label">Total Users</span>
+        </div>
+        <div class="admin-stat-sep"></div>
+        <div class="admin-stat">
+          <span class="admin-kpi-icon"><i class="fa-solid fa-user-shield"></i></span>
+          <span class="admin-stat-val admin-stat-violet" id="statAdmins">—</span>
+          <span class="admin-stat-label">Admins / Authors</span>
+        </div>
+        <div class="admin-stat-sep"></div>
+        <div class="admin-stat">
+          <span class="admin-kpi-icon"><i class="fa-solid fa-user-check"></i></span>
+          <span class="admin-stat-val admin-stat-blue" id="statUsers">—</span>
+          <span class="admin-stat-label">Regular Users</span>
+        </div>
+      </div>
+
+      
+
+      <div class="admin-panel-wrap">
+        <!-- Header row -->
+        <div class="admin-table-header">
+          <div class="ath-user">User</div>
+          <div class="ath-modules">
+            <span class="ath-module-label">
+              <i class="fa-solid fa-gauge-high"></i> Dashboard
+            </span>
+            <span class="ath-module-label">
+              <i class="fa-solid fa-file-lines"></i> Reports
+            </span>
+            <span class="ath-module-label">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18" width="12" height="12" fill="currentColor" style="display:inline-block;vertical-align:middle;margin-right:5px;"><rect x="2" y="1" width="14" height="16" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.5"/><rect x="4.5" y="4.5" width="5" height="1.5" rx="0.75"/><rect x="4.5" y="7.5" width="9" height="1.5" rx="0.75"/><rect x="4.5" y="10.5" width="7" height="1.5" rx="0.75"/><rect x="4.5" y="13.5" width="4" height="1.5" rx="0.75"/><circle cx="3.5" cy="5.25" r="0.75"/><circle cx="3.5" cy="8.25" r="0.75"/><circle cx="3.5" cy="11.25" r="0.75"/><circle cx="3.5" cy="14.25" r="0.75"/></svg> Form
+            </span>
           </div>
-          <i class="fa-solid fa-barcode"></i>
+          <div class="ath-action">Action</div>
         </div>
 
-        <div class="grid create-code-grid">
-
-          <label>
-            Group
-            <div class="custom-select" data-id="group" data-placeholder="Select Group">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Group</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Category
-            <div class="custom-select" data-id="category" data-placeholder="Select Category">
-              <button class="cs-trigger" type="button" disabled>
-                <span class="cs-value cs-placeholder">Select Category</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Sub-Category
-            <div class="custom-select" data-id="subCategory" data-placeholder="Select Sub-Category">
-              <button class="cs-trigger" type="button" disabled>
-                <span class="cs-value cs-placeholder">Select Sub-Category</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Number
-            <div class="custom-select" data-id="number" data-placeholder="Select Number">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Number</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            UOM
-            <div class="custom-select" data-id="uom" data-placeholder="Select UOM">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select UOM</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Description
-            <div class="custom-select" data-id="description" data-placeholder="Select Description">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Description</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Description (Opt.)
-            <div class="custom-select" data-id="descriptionOpt" data-placeholder="Select Description (Opt.)">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Description (Opt.)</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Colour
-            <div class="custom-select" data-id="colour" data-placeholder="Select Colour">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Colour</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Stock Keeping UOM
-            <div class="custom-select" data-id="stockKeepingUom" data-placeholder="Select Stock Keeping UOM">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Stock Keeping UOM</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Alt. UOM
-            <div class="custom-select" data-id="altUom" data-placeholder="Select Alt. UOM">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Alt. UOM</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-          <label>
-            Unit Conversion Rate
-            <div class="custom-select" data-id="conversionRate" data-placeholder="Select Rate">
-              <button class="cs-trigger" type="button">
-                <span class="cs-value cs-placeholder">Select Rate</span>
-                <i class="fa-solid fa-chevron-down cs-chevron"></i>
-              </button>
-              <div class="cs-panel">
-                <div class="cs-search-wrap">
-                  <i class="fa-solid fa-magnifying-glass"></i>
-                  <input class="cs-search" type="text" placeholder="Search...">
-                </div>
-                <ul class="cs-list"></ul>
-              </div>
-            </div>
-          </label>
-
-        </div>
-
-        <div class="code-box">
-          <span>Generated Product Code</span>
-          <strong id="generated-code">Waiting for input</strong>
-        </div>
-      </section>
-
-      <aside class="ai-panel">
-
-        <div class="aip-orb aip-orb-1"></div>
-        <div class="aip-orb aip-orb-2"></div>
-
-        <div class="aip-header">
-          <div class="aip-avatar">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span class="aip-avatar-ring"></span>
-          </div>
-          <div>
-            <h3 class="aip-name">AI Assistant</h3>
-            <div class="aip-status">
-              <span class="aip-dot"></span>
-              <span>Online &amp; Ready</span>
-            </div>
+        <!-- Loading / error / users list -->
+        <div id="adminUsersList">
+          <div class="admin-loading">
+            <span class="loader"></span>
+            <span>Loading users…</span>
           </div>
         </div>
+      </div>
+    </div>
 
-
-      </aside>
-
+    <!-- ═══════════════ SETTINGS PAGE ═══════════════ -->
+    <div id="page-settings" class="page">
+      <div class="page-header ph-settings">
+        <div class="ph-badge"><span class="ph-badge-dot"></span>Preferences</div>
+        <h2 class="ph-title">SETTINGS</h2>
+        <div class="ph-accent-line"></div>
+        <p class="ph-desc">Application settings (coming soon)</p>
+      </div>
+      <div class="reports-placeholder">
+        <div class="rp-icon"><i class="fa-solid fa-gear"></i></div>
+        <h3>Settings Coming Soon</h3>
+        <p>User preferences and configuration will appear here.</p>
+      </div>
     </div>
 
   </main>
-
 </div>
 
-<script src="js/app.js"></script>
+<!-- Toast notification -->
+<div class="pcg-toast" id="pcgToast">
+  <i class="fa-solid fa-circle-check toast-icon-ok" id="toastIcon"></i>
+  <span id="toastMsg">Saved successfully</span>
+</div>
+
+<script src="auth.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
